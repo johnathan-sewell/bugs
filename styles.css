@@ -9,10 +9,12 @@ body {
   background-color: rgb(234, 188, 88);
 }
 
-.box {
+#bug {
   width: 30px;
   height: 30px;
   background-image: url(./bugs.png);
+  position: absolute;
+  bottom: 0;
 }
 
 nav {
