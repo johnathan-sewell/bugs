@@ -24,7 +24,7 @@ class Bug {
     this.#positionY = 0;
     this.#positionX = 0;
     this.#direction = "stop";
-    this.#speed = 3;
+    this.#speed = 0;
 
     this.#el = document.createElement("div");
     this.#el.className = "bug";
@@ -35,17 +35,23 @@ class Bug {
     this.#el.style.backgroundPositionY = 0 + "px";
 
     window.addEventListener("keydown", (key) => {
+      if (!["ArrowRight", "ArrowLeft"].includes(key.code)) return;
+
       if (key.code === "ArrowRight") this.#direction = "right";
       if (key.code === "ArrowLeft") this.#direction = "left";
+
       this.#sprite = "Pink_Monster_Walk_6.png";
       this.#totalSprites = 6;
+      if (this.#speed === 0) this.#speed = 2;
     });
+
     window.addEventListener("keyup", (key) => {
-      if (key.code === "ArrowRight") this.#direction = "stop";
-      if (key.code === "ArrowLeft") this.#direction = "stop";
+      if (!["ArrowRight", "ArrowLeft"].includes(key.code)) return;
+
       this.#currentSpritePx = 0;
       this.#sprite = "Pink_Monster_Idle_4.png";
       this.#totalSprites = 4;
+      this.#speed = 0;
     });
   }
 
@@ -58,6 +64,9 @@ class Bug {
 
     if (this.#direction === "right") this.#positionX += this.#speed; // move right
     if (this.#direction === "left") this.#positionX -= this.#speed; // move left
+
+    // increase speed
+    if (this.#speed && this.#speed < 8) this.#speed++;
   }
 
   render() {
@@ -65,12 +74,9 @@ class Bug {
     this.#el.style.backgroundPositionX = this.#currentSpritePx * -1 + "px";
     this.#el.style.backgroundImage = `url(./${this.#sprite})`;
 
-    this.#el.style.transform =
-      "translateZ(0) translate(" +
-      this.#positionX +
-      "px, " +
-      this.#positionY +
-      "px) scale(2)";
+    this.#el.style.transform = `translate(${this.#positionX}px, ${
+      this.#positionY
+    }px) scaleX(${this.#direction === "left" ? -2 : 2}) scaleY(${2})`;
   }
 }
 
