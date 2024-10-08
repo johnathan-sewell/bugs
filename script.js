@@ -18,7 +18,9 @@ const bugs = [];
 class Bug {
   #el;
   #currentSpritePx;
-  #bugPositionBottomPx = 0;
+  #positionY = 0;
+  #positionX = 0;
+  #direction = "up";
 
   constructor() {
     this.#el = document.createElement("div");
@@ -28,6 +30,13 @@ class Bug {
     this.#currentSpritePx = firstSpritePx;
     this.#el.style.backgroundPositionX = this.#currentSpritePx + "px";
     this.#el.style.backgroundPositionY = spriteRow * -32 + -3 + "px";
+
+    window.addEventListener("keydown", (key) => {
+      if (key.code === "ArrowUp") this.#direction = "up";
+      if (key.code === "ArrowRight") this.#direction = "right";
+      if (key.code === "ArrowDown") this.#direction = "down";
+      if (key.code === "ArrowLeft") this.#direction = "left";
+    });
   }
 
   update() {
@@ -37,18 +46,34 @@ class Bug {
       this.#currentSpritePx = firstSpritePx;
     }
 
-    // move bug up
-    if (this.#bugPositionBottomPx > playSpace.clientHeight) {
-      this.#bugPositionBottomPx = -bugHeight;
-    } else {
-      this.#bugPositionBottomPx += fps / 2;
-    }
+    if (this.#direction === "up") this.#positionY -= 4; // move bug up
+    if (this.#direction === "right") this.#positionX += 4; // move bug right
+    if (this.#direction === "down") this.#positionY += 4; // move bug down
+    if (this.#direction === "left") this.#positionX -= 4; // move bug left
   }
 
   render() {
     // Draw your game elements here
     this.#el.style.backgroundPositionX = this.#currentSpritePx * -1 + "px";
-    this.#el.style.bottom = this.#bugPositionBottomPx + "px";
+
+    const rotation =
+      this.#direction === "up"
+        ? Math.PI * 2
+        : this.#direction === "right"
+        ? Math.PI / 2
+        : this.#direction === "down"
+        ? Math.PI
+        : Math.PI * 1.5;
+
+    this.#el.style.transform =
+      "translateZ(0) translate(" +
+      this.#positionX +
+      "px, " +
+      this.#positionY +
+      "px) " +
+      "rotate(" +
+      rotation +
+      "rad)";
   }
 }
 
